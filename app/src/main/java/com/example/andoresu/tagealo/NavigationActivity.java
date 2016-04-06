@@ -3,9 +3,9 @@ package com.example.andoresu.tagealo;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,13 +16,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AudioGalleryFragment.OnFragmentInteractionListener, GalleryFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener {
+
+    private AudioRecording audioRecording = new AudioRecording();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +56,30 @@ public class NavigationActivity extends AppCompatActivity
                 .build();
 
         ImageView iconCamera = new ImageView(this);
-        iconCamera.setImageResource(R.drawable.ic_mic);
+        iconCamera.setImageResource(R.drawable.ic_menu_camera);
         ImageView iconMic = new ImageView((this));
-        iconMic.setImageResource(R.drawable.ic_menu_camera);
+        iconMic.setImageResource(R.drawable.ic_mic);
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
 
         SubActionButton buttonCamera = itemBuilder.setContentView(iconCamera).build();
         SubActionButton buttonMic = itemBuilder.setContentView(iconMic).build();
+        buttonMic.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    // startRecording();
+                    audioRecording.starRecording();
+                    Toast.makeText(NavigationActivity.this, "Grabando...", Toast.LENGTH_SHORT).show();
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP
+                        || motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
+                    Toast.makeText(NavigationActivity.this, "Grabado finalizado", Toast.LENGTH_SHORT).show();
+                    //stoprecord();
+                    audioRecording.stopRecording();
+                    // stopRecording(true);
+                }
+                return true;
+            }
+        });
 
         FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(buttonCamera)
@@ -124,6 +147,7 @@ public class NavigationActivity extends AppCompatActivity
             fragmentClass = GalleryFragment.class;
         } else if (id == R.id.nav_audio_gallery) {
             fragmentClass = AudioGalleryFragment.class;
+
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_send) {
@@ -133,6 +157,11 @@ public class NavigationActivity extends AppCompatActivity
         if(fragmentClass != null){
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
+                if(id == R.id.nav_audio_gallery){
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("audioRecording", audioRecording);
+                    fragment.setArguments(bundle);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

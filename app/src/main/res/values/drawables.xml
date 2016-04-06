@@ -12,4 +12,6 @@
     <item name="audio_image" type="drawable">@mipmap/audio_image</item>
     <item name="ic_add" type="drawable">@android:drawable/ic_input_add</item>
     <item name="ic_mic" type="drawable">@drawable/mic_icon</item>
+    <item name="ic_pause" type="drawable">@android:drawable/ic_media_pause</item>
+    <item name="ic_play" type="drawable">@android:drawable/ic_media_play</item>
 </resources>
