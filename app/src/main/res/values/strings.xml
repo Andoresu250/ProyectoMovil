@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TagealoEstudiante</string>
+
+    <string-array name="activityList">
+        <item>Plaza de la paz</item>
+        <item>Amira de la Rosa</item>
+    </string-array>
+    <string name="title_activity_maps">Map</string>
+
+</resources>
